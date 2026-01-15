@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: mini-erp-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mini_erp
+      POSTGRES_PASSWORD: mini_erp_password
+      POSTGRES_DB: mini_erp
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U mini_erp']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mini-erp-network
+
+  # Backend API (opciono - za production deployment)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mini-erp-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://mini_erp:mini_erp_password@postgres:5432/mini_erp
+      JWT_SECRET: change-this-to-super-secret-key-in-production
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mini-erp-network
+    command: sh -c "npx prisma migrate deploy && npm run start:prod"
+    profiles:
+      - production
+
+  # Frontend (opciono - za production deployment)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mini-erp-frontend
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
+    networks:
+      - mini-erp-network
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  mini-erp-network:
+    driver: bridge

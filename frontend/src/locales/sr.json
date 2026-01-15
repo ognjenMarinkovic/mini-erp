@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "Mini ERP",
+    "description": "Sistem za evidenciju poslovanja"
+  },
+  "auth": {
+    "login": "Prijava",
+    "register": "Registracija",
+    "logout": "Odjava",
+    "email": "Email",
+    "password": "Lozinka",
+    "firstName": "Ime",
+    "lastName": "Prezime",
+    "companyName": "Naziv kompanije",
+    "pib": "PIB",
+    "address": "Adresa",
+    "city": "Grad",
+    "phone": "Telefon"
+  },
+  "nav": {
+    "dashboard": "Kontrolna tabla",
+    "clients": "Klijenti",
+    "invoices": "Fakture",
+    "payments": "Uplate",
+    "expenses": "Troškovi",
+    "reports": "Izveštaji"
+  },
+  "common": {
+    "save": "Sačuvaj",
+    "cancel": "Otkaži",
+    "delete": "Obriši",
+    "edit": "Izmeni",
+    "add": "Dodaj",
+    "search": "Pretraži",
+    "filter": "Filter",
+    "export": "Eksportuj",
+    "loading": "Učitavanje...",
+    "noData": "Nema podataka",
+    "actions": "Akcije"
+  },
+  "clients": {
+    "title": "Klijenti",
+    "addClient": "Dodaj klijenta",
+    "editClient": "Izmeni klijenta",
+    "name": "Naziv",
+    "contact": "Kontakt",
+    "totalInvoices": "Ukupno faktura",
+    "totalRevenue": "Ukupan prihod"
+  },
+  "invoices": {
+    "title": "Fakture",
+    "addInvoice": "Kreiraj fakturu",
+    "number": "Broj",
+    "date": "Datum",
+    "dueDate": "Rok plaćanja",
+    "client": "Klijent",
+    "total": "Ukupno",
+    "status": "Status",
+    "pending": "Na čekanju",
+    "paid": "Plaćeno",
+    "overdue": "Prekoračeno",
+    "partial": "Delimično plaćeno",
+    "cancelled": "Otkazano"
+  },
+  "expenses": {
+    "title": "Troškovi",
+    "addExpense": "Dodaj trošak",
+    "category": "Kategorija",
+    "amount": "Iznos",
+    "description": "Opis",
+    "date": "Datum"
+  },
+  "dashboard": {
+    "welcome": "Dobrodošli",
+    "revenue": "Prihodi",
+    "expenses": "Rashodi",
+    "outstanding": "Dugovanja",
+    "clients": "Broj klijenata",
+    "recentInvoices": "Nedavne fakture",
+    "overdueInvoices": "Fakture sa prekoračenim rokom"
+  }
+}

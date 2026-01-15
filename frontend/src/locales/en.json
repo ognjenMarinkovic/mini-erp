@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "Mini ERP",
+    "description": "Business Management System"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "companyName": "Company Name",
+    "pib": "Tax ID",
+    "address": "Address",
+    "city": "City",
+    "phone": "Phone"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "clients": "Clients",
+    "invoices": "Invoices",
+    "payments": "Payments",
+    "expenses": "Expenses",
+    "reports": "Reports"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "loading": "Loading...",
+    "noData": "No data",
+    "actions": "Actions"
+  },
+  "clients": {
+    "title": "Clients",
+    "addClient": "Add Client",
+    "editClient": "Edit Client",
+    "name": "Name",
+    "contact": "Contact",
+    "totalInvoices": "Total Invoices",
+    "totalRevenue": "Total Revenue"
+  },
+  "invoices": {
+    "title": "Invoices",
+    "addInvoice": "Create Invoice",
+    "number": "Number",
+    "date": "Date",
+    "dueDate": "Due Date",
+    "client": "Client",
+    "total": "Total",
+    "status": "Status",
+    "pending": "Pending",
+    "paid": "Paid",
+    "overdue": "Overdue",
+    "partial": "Partially Paid",
+    "cancelled": "Cancelled"
+  },
+  "expenses": {
+    "title": "Expenses",
+    "addExpense": "Add Expense",
+    "category": "Category",
+    "amount": "Amount",
+    "description": "Description",
+    "date": "Date"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "revenue": "Revenue",
+    "expenses": "Expenses",
+    "outstanding": "Outstanding",
+    "clients": "Clients Count",
+    "recentInvoices": "Recent Invoices",
+    "overdueInvoices": "Overdue Invoices"
+  }
+}
