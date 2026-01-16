@@ -20,6 +20,9 @@
   "nav": {
     "dashboard": "Dashboard",
     "clients": "Clients",
+    "kanban": "Kanban Board",
+    "gantt": "Gantt Chart",
+    "timeTracking": "Time Tracking",
     "invoices": "Invoices",
     "payments": "Payments",
     "expenses": "Expenses",
@@ -78,5 +81,29 @@
     "clients": "Clients Count",
     "recentInvoices": "Recent Invoices",
     "overdueInvoices": "Overdue Invoices"
+  },
+  "kanban": {
+    "title": "Kanban Board",
+    "selectClient": "Select Client",
+    "selectClientPrompt": "Select a Client",
+    "selectClientDescription": "Select a client from the dropdown to view their tasks",
+    "noClients": "No clients",
+    "addTask": "Add Task",
+    "newTask": "New Task",
+    "editTask": "Edit Task",
+    "deleteTask": "Delete Task",
+    "taskTitle": "Title",
+    "taskDescription": "Description",
+    "serviceType": "Service Type",
+    "deadline": "Deadline",
+    "noTasks": "No tasks",
+    "columns": {
+      "onboarding": "Onboarding",
+      "backlog": "Backlog",
+      "inProgress": "In Progress",
+      "review": "Review",
+      "done": "Done",
+      "archive": "Archive"
+    }
   }
 }

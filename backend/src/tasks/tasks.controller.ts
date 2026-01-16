@@ -53,6 +53,32 @@ export class TasksController {
     return this.tasksService.findByClient(clientId, user.companyId);
   }
 
+  @Get('gantt/:clientId')
+  @ApiOperation({ summary: 'Gantt Chart prikaz taskova za klijenta' })
+  getGantt(@CurrentUser() user: any, @Param('clientId') clientId: string) {
+    return this.tasksService.getGantt(clientId, user.companyId);
+  }
+
+  @Patch(':id/dates')
+  @ApiOperation({ summary: 'Ažuriraj datume taska (Gantt drag)' })
+  updateDates(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+    @Body() body: { startDate: string | null; endDate: string | null },
+  ) {
+    return this.tasksService.updateDates(id, body.startDate, body.endDate, user.companyId);
+  }
+
+  @Patch(':id/progress')
+  @ApiOperation({ summary: 'Ažuriraj progress taska' })
+  updateProgress(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+    @Body() body: { progress: number },
+  ) {
+    return this.tasksService.updateProgress(id, body.progress, user.companyId);
+  }
+
   @Get('stats')
   @ApiOperation({ summary: 'Statistika taskova za dashboard' })
   getStats(@CurrentUser() user: any) {

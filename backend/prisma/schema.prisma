@@ -11,16 +11,17 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  role      UserRole @default(USER)
-  companyId String
-  company   Company  @relation(fields: [companyId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String      @id @default(uuid())
+  email       String      @unique
+  password    String
+  firstName   String
+  lastName    String
+  role        UserRole    @default(USER)
+  companyId   String
+  company     Company     @relation(fields: [companyId], references: [id])
+  timeEntries TimeEntry[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@map("users")
 }
@@ -64,6 +65,7 @@ model Client {
   clientUsers ClientUser[]
   tasks       Task[]
   files       ClientFile[]
+  timeEntries TimeEntry[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -201,17 +203,50 @@ model Task {
   serviceType   ServiceType
   deadline      DateTime?
   
+  // Gantt Chart polja
+  startDate     DateTime?
+  endDate       DateTime?
+  isMilestone   Boolean     @default(false)
+  progress      Int         @default(0) // 0-100%
+  
   // Kanban
   status        TaskStatus  @default(BACKLOG)
   position      Int         @default(0)
   
   // Relacije
   comments      Comment[]
+  timeEntries   TimeEntry[]
+  
+  // Task dependencies za Gantt
+  dependentOn   TaskDependency[] @relation("DependentTask")
+  dependsOn     TaskDependency[] @relation("DependsOnTask")
   
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   @@map("tasks")
+}
+
+// Zavisnosti između taskova (za Gantt Chart)
+model TaskDependency {
+  id              String         @id @default(uuid())
+  dependentTaskId String
+  dependentTask   Task           @relation("DependentTask", fields: [dependentTaskId], references: [id], onDelete: Cascade)
+  dependsOnTaskId String
+  dependsOnTask   Task           @relation("DependsOnTask", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+  type            DependencyType @default(FINISH_TO_START)
+  
+  createdAt       DateTime       @default(now())
+
+  @@unique([dependentTaskId, dependsOnTaskId])
+  @@map("task_dependencies")
+}
+
+enum DependencyType {
+  FINISH_TO_START  // Task B počinje kad Task A završi
+  START_TO_START   // Task B počinje kad Task A počne
+  FINISH_TO_FINISH // Task B završava kad Task A završi
+  START_TO_FINISH  // Task B završava kad Task A počne
 }
 
 // 6 Kanban kolona
@@ -297,4 +332,37 @@ model ClientFile {
   createdAt    DateTime @default(now())
 
   @@map("client_files")
+}
+
+// ============================================
+// TIME TRACKING - Praćenje vremena
+// ============================================
+
+model TimeEntry {
+  id          String    @id @default(uuid())
+  
+  // Veza sa klijentom i opcionalno taskom
+  clientId    String
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  taskId      String?
+  task        Task?     @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  
+  // Ko je uneo vreme
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  
+  // Podaci o utrošenom vremenu
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int?      // Trajanje u minutima (izračunava se automatski)
+  
+  // Za fakturisanje
+  billable    Boolean   @default(true)
+  hourlyRate  Decimal?  @db.Decimal(10, 2) // Satnica (opciono)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("time_entries")
 }

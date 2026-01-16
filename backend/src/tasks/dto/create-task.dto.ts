@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDateString, IsBoolean, IsInt, Min, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum ServiceType {
@@ -39,4 +39,27 @@ export class CreateTaskDto {
   @IsDateString()
   @IsOptional()
   deadline?: string;
+
+  // Gantt Chart polja
+  @ApiPropertyOptional({ description: 'Datum početka taska (Gantt)' })
+  @IsDateString()
+  @IsOptional()
+  startDate?: string;
+
+  @ApiPropertyOptional({ description: 'Datum završetka taska (Gantt)' })
+  @IsDateString()
+  @IsOptional()
+  endDate?: string;
+
+  @ApiPropertyOptional({ description: 'Da li je task milestone' })
+  @IsBoolean()
+  @IsOptional()
+  isMilestone?: boolean;
+
+  @ApiPropertyOptional({ description: 'Procenat završenosti (0-100)' })
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  @IsOptional()
+  progress?: number;
 }

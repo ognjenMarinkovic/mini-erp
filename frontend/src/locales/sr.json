@@ -20,6 +20,9 @@
   "nav": {
     "dashboard": "Kontrolna tabla",
     "clients": "Klijenti",
+    "kanban": "Kanban Board",
+    "gantt": "Gantt Chart",
+    "timeTracking": "Time Tracking",
     "invoices": "Fakture",
     "payments": "Uplate",
     "expenses": "Troškovi",
@@ -78,5 +81,29 @@
     "clients": "Broj klijenata",
     "recentInvoices": "Nedavne fakture",
     "overdueInvoices": "Fakture sa prekoračenim rokom"
+  },
+  "kanban": {
+    "title": "Kanban Board",
+    "selectClient": "Izaberite klijenta",
+    "selectClientPrompt": "Izaberite klijenta",
+    "selectClientDescription": "Izaberite klijenta iz padajuće liste da biste videli njegove taskove",
+    "noClients": "Nema klijenata",
+    "addTask": "Dodaj task",
+    "newTask": "Novi task",
+    "editTask": "Izmeni task",
+    "deleteTask": "Obriši task",
+    "taskTitle": "Naslov",
+    "taskDescription": "Opis",
+    "serviceType": "Tip servisa",
+    "deadline": "Rok",
+    "noTasks": "Nema taskova",
+    "columns": {
+      "onboarding": "Onboarding",
+      "backlog": "Backlog",
+      "inProgress": "U toku",
+      "review": "Review",
+      "done": "Završeno",
+      "archive": "Arhiva"
+    }
   }
 }

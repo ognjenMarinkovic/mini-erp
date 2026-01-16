@@ -75,3 +75,47 @@
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
+
+/* TipTap / Prose stilovi */
+.prose {
+  @apply text-gray-700;
+}
+.prose p {
+  @apply my-2;
+}
+.prose strong {
+  @apply font-semibold text-gray-900;
+}
+.prose em {
+  @apply italic;
+}
+.prose code {
+  @apply rounded bg-gray-100 px-1 py-0.5 font-mono text-sm text-pink-600;
+}
+.prose ul {
+  @apply my-2 list-disc pl-5;
+}
+.prose ol {
+  @apply my-2 list-decimal pl-5;
+}
+.prose li {
+  @apply my-1;
+}
+.prose blockquote {
+  @apply my-2 border-l-4 border-gray-300 pl-4 italic text-gray-600;
+}
+.prose h1 {
+  @apply my-3 text-xl font-bold;
+}
+.prose h2 {
+  @apply my-2 text-lg font-semibold;
+}
+.prose h3 {
+  @apply my-2 text-base font-semibold;
+}
+
+/* TipTap placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  @apply pointer-events-none float-left h-0 text-gray-400;
+  content: attr(data-placeholder);
+}

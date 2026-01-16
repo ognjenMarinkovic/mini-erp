@@ -2,8 +2,10 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../notifications/email.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import * as fs from 'fs';
@@ -11,7 +13,12 @@ import * as path from 'path';
 
 @Injectable()
 export class CommentsService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(CommentsService.name);
+
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
 
   // Kreiranje komentara (Admin ili Client)
   async create(
@@ -48,7 +55,7 @@ export class CommentsService {
       }
     }
 
-    return this.prisma.comment.create({
+    const comment = await this.prisma.comment.create({
       data: {
         taskId: createCommentDto.taskId,
         content: createCommentDto.content,
@@ -62,8 +69,54 @@ export class CommentsService {
         replies: {
           include: { attachments: true },
         },
+        task: {
+          select: {
+            id: true,
+            title: true,
+            clientId: true,
+            client: {
+              select: { companyId: true },
+            },
+          },
+        },
       },
     });
+
+    // Pošalji email notifikaciju klijentima ako je Admin ostavio komentar
+    if (authorType === 'ADMIN') {
+      this.sendNewCommentNotification(comment);
+    }
+
+    return comment;
+  }
+
+  // Helper metoda za slanje notifikacije o novom komentaru
+  private async sendNewCommentNotification(comment: any) {
+    try {
+      // Dohvati sve ClientUser emailove za ovog klijenta
+      const clientUsers = await this.prisma.clientUser.findMany({
+        where: { clientId: comment.task.clientId, isActive: true },
+        select: { email: true },
+      });
+
+      const emails = clientUsers.map((u) => u.email);
+      if (emails.length === 0) return;
+
+      // Dohvati ime kompanije
+      const company = await this.prisma.company.findFirst({
+        where: { id: comment.task.client.companyId },
+        select: { name: true },
+      });
+
+      await this.emailService.sendNewCommentEmail(
+        emails,
+        comment.task,
+        comment,
+        company?.name || 'Agencija',
+      );
+    } catch (error) {
+      this.logger.error('Failed to send new comment notification:', error);
+    }
   }
 
   // Svi komentari za task
