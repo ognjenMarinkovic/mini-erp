@@ -120,30 +120,30 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+      <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white dark:bg-gray-800 p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">
+          <h2 className="text-2xl font-semibold dark:text-white">
             {invoice ? 'Izmena fakture' : t('invoices.addInvoice')}
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
             <X className="h-6 w-6" />
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="mb-4 rounded-md bg-red-50 dark:bg-red-900/30 p-3 text-sm text-red-700 dark:text-red-300">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="md:col-span-1">
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('invoices.client')} *
               </label>
               <select
                 value={formData.clientId}
                 onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                 required
               >
                 <option value="">Izaberite klijenta</option>
@@ -156,27 +156,27 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('invoices.date')} *
               </label>
               <input
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                 required
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('invoices.dueDate')} *
               </label>
               <input
                 type="date"
                 value={formData.dueDate}
                 onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                 required
               />
             </div>
@@ -184,11 +184,11 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
 
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Stavke fakture *</label>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Stavke fakture *</label>
               <button
                 type="button"
                 onClick={handleAddItem}
-                className="flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
+                className="flex items-center gap-1 rounded-md bg-blue-600 dark:bg-blue-700 px-3 py-1 text-sm text-white hover:bg-blue-700 dark:hover:bg-blue-600"
               >
                 <Plus className="h-4 w-4" />
                 Dodaj stavku
@@ -203,7 +203,7 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
                     placeholder="Opis"
                     value={item.description}
                     onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                    className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                     required
                   />
                   <input
@@ -213,7 +213,7 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
                     onChange={(e) =>
                       handleItemChange(index, 'quantity', parseFloat(e.target.value) || 0)
                     }
-                    className="w-24 rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-24 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                     min="0.01"
                     step="0.01"
                     required
@@ -225,19 +225,19 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
                     onChange={(e) =>
                       handleItemChange(index, 'price', parseFloat(e.target.value) || 0)
                     }
-                    className="w-32 rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-32 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                     min="0.01"
                     step="0.01"
                     required
                   />
-                  <div className="flex w-32 items-center rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm">
+                  <div className="flex w-32 items-center rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white">
                     {formatCurrency(item.quantity * item.price)}
                   </div>
                   {formData.items.length > 1 && (
                     <button
                       type="button"
                       onClick={() => handleRemoveItem(index)}
-                      className="rounded p-2 text-red-600 hover:bg-red-50"
+                      className="rounded p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
                     >
                       <Trash2 className="h-5 w-5" />
                     </button>
@@ -248,8 +248,8 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
 
             <div className="mt-4 flex justify-end">
               <div className="text-right">
-                <div className="text-sm text-gray-600">Ukupno:</div>
-                <div className="text-2xl font-bold text-gray-900">
+                <div className="text-sm text-gray-600 dark:text-gray-400">Ukupno:</div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white">
                   {formatCurrency(calculateTotal())}
                 </div>
               </div>
@@ -257,11 +257,11 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Napomene</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Napomene</label>
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
               rows={3}
             />
           </div>
@@ -270,14 +270,14 @@ export function InvoiceFormDialog({ isOpen, onClose, invoice }: InvoiceFormDialo
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+              className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
               {t('common.cancel')}
             </button>
             <button
               type="submit"
               disabled={createMutation.isPending || updateMutation.isPending}
-              className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:bg-blue-300"
+              className="flex-1 rounded-md bg-blue-600 dark:bg-blue-700 px-4 py-2 text-white hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-blue-300 dark:disabled:bg-blue-800"
             >
               {createMutation.isPending || updateMutation.isPending
                 ? t('common.loading')

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ClientsService } from './clients.service';
@@ -26,7 +27,37 @@ export class ClientsController {
   @Post()
   @ApiOperation({ summary: 'Kreiranje novog klijenta' })
   create(@CurrentUser() user: any, @Body() createClientDto: CreateClientDto) {
-    return this.clientsService.create(user.companyId, createClientDto);
+    // Debug logovanje - koristi process.stdout.write za sigurno ispisivanje
+    process.stdout.write('\n=== CLIENT CREATION REQUEST ===\n');
+    process.stdout.write(`User from token: ${JSON.stringify({
+      id: user?.id,
+      email: user?.email,
+      role: user?.role,
+      roleType: typeof user?.role,
+      companyId: user?.companyId,
+    }, null, 2)}\n`);
+    process.stdout.write(`Full user object: ${JSON.stringify(user, null, 2)}\n`);
+    process.stdout.write(`Request body: ${JSON.stringify(createClientDto, null, 2)}\n`);
+    process.stdout.write('==============================\n\n');
+    
+    // Takođe koristi console.log za slučaj da neko gleda konzolu
+    console.log('=== CLIENT CREATION REQUEST ===');
+    console.log('User from token:', {
+      id: user?.id,
+      email: user?.email,
+      role: user?.role,
+      roleType: typeof user?.role,
+      companyId: user?.companyId,
+    });
+    console.log('Full user object:', JSON.stringify(user, null, 2));
+    console.log('Request body:', JSON.stringify(createClientDto, null, 2));
+    console.log('==============================');
+    
+    if (!user || !user.role) {
+      throw new ForbiddenException('Korisnik nije autentifikovan ili nema ulogu');
+    }
+    
+    return this.clientsService.create(user.companyId, createClientDto, user.role);
   }
 
   @Get()

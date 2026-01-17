@@ -24,7 +24,14 @@ export interface AuthResponse {
     firstName: string;
     lastName: string;
     role: string;
-    companyId: string;
+    companyId?: string;
+    clientId?: string;
+    client?: {
+      id: string;
+      name: string;
+      companyId: string;
+    };
+    userType?: 'ADMIN' | 'CLIENT';
   };
   token: string;
   message: string;

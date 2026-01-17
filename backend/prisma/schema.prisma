@@ -11,21 +11,23 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  role      UserRole @default(USER)
-  companyId String
-  company   Company  @relation(fields: [companyId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String      @id @default(uuid())
+  email       String      @unique
+  password    String
+  firstName   String
+  lastName    String
+  role        UserRole    @default(USER)
+  companyId   String
+  company     Company     @relation(fields: [companyId], references: [id])
+  timeEntries TimeEntry[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@map("users")
 }
 
 enum UserRole {
+  SUPERADMIN
   ADMIN
   USER
   ACCOUNTANT
@@ -50,18 +52,23 @@ model Company {
 }
 
 model Client {
-  id        String    @id @default(uuid())
-  companyId String
-  company   Company   @relation(fields: [companyId], references: [id])
-  name      String
-  pib       String?
-  address   String
-  city      String
-  phone     String?
-  email     String?
-  invoices  Invoice[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String       @id @default(uuid())
+  companyId   String
+  company     Company      @relation(fields: [companyId], references: [id])
+  name        String
+  pib         String?
+  address     String
+  city        String
+  phone       String?
+  email       String?
+  invoices    Invoice[]
+  // Nove relacije za Agency Management
+  clientUsers ClientUser[]
+  tasks       Task[]
+  files       ClientFile[]
+  timeEntries TimeEntry[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@map("clients")
 }
@@ -150,4 +157,218 @@ enum ExpenseCategory {
   MARKETING
   TRANSPORT
   OTHER
+}
+
+// ============================================
+// AGENCY MANAGEMENT - Novi modeli
+// ============================================
+
+// Korisnici klijentske firme (loguju se u Client Hub)
+model ClientUser {
+  id        String         @id @default(uuid())
+  clientId  String
+  client    Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  email     String         @unique
+  password  String
+  firstName String
+  lastName  String
+  role      ClientUserRole @default(MEMBER)
+  avatar    String?
+  isActive  Boolean        @default(true)
+  lastLogin DateTime?
+  // Notification preferences
+  notifyTaskInProgress Boolean @default(true)
+  notifyTaskReview     Boolean @default(true)
+  notifyTaskCompleted  Boolean @default(true)
+  notifyNewComment     Boolean @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@map("client_users")
+}
+
+enum ClientUserRole {
+  OWNER  // Glavni kontakt - može sve
+  MEMBER // Može dodavati taskove i komentare
+  VIEWER // Samo pregled
+}
+
+// Taskovi - direktno vezani za klijenta (Kanban)
+model Task {
+  id            String      @id @default(uuid())
+  clientId      String
+  client        Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  // Ko je kreirao task
+  createdById   String
+  createdByType String      // "ADMIN" ili "CLIENT"
+  
+  // Osnovni podaci
+  title         String
+  description   String?
+  serviceType   ServiceType
+  deadline      DateTime?
+  
+  // Gantt Chart polja
+  startDate     DateTime?
+  endDate       DateTime?
+  isMilestone   Boolean     @default(false)
+  progress      Int         @default(0) // 0-100%
+  
+  // Kanban
+  status        TaskStatus  @default(BACKLOG)
+  position      Int         @default(0)
+  
+  // Relacije
+  comments      Comment[]
+  timeEntries   TimeEntry[]
+  
+  // Task dependencies za Gantt
+  dependentOn   TaskDependency[] @relation("DependentTask")
+  dependsOn     TaskDependency[] @relation("DependsOnTask")
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("tasks")
+}
+
+// Zavisnosti između taskova (za Gantt Chart)
+model TaskDependency {
+  id              String         @id @default(uuid())
+  dependentTaskId String
+  dependentTask   Task           @relation("DependentTask", fields: [dependentTaskId], references: [id], onDelete: Cascade)
+  dependsOnTaskId String
+  dependsOnTask   Task           @relation("DependsOnTask", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+  type            DependencyType @default(FINISH_TO_START)
+  
+  createdAt       DateTime       @default(now())
+
+  @@unique([dependentTaskId, dependsOnTaskId])
+  @@map("task_dependencies")
+}
+
+enum DependencyType {
+  FINISH_TO_START  // Task B počinje kad Task A završi
+  START_TO_START   // Task B počinje kad Task A počne
+  FINISH_TO_FINISH // Task B završava kad Task A završi
+  START_TO_FINISH  // Task B završava kad Task A počne
+}
+
+// 6 Kanban kolona
+enum TaskStatus {
+  ONBOARDING
+  BACKLOG
+  IN_PROGRESS
+  REVIEW
+  DONE
+  ARCHIVE
+}
+
+// Vrste servisa koje agencija pruža
+enum ServiceType {
+  BRANDING
+  LOGO_DESIGN
+  WEB_DESIGN
+  UI_UX
+  WEBFLOW_DEV
+  SOCIAL_MEDIA
+  PITCH_DECK
+  MOTION_GRAPHICS
+  ILLUSTRATIONS
+  PRINT_DESIGN
+  OTHER
+}
+
+// Komentari na taskovima
+model Comment {
+  id            String              @id @default(uuid())
+  taskId        String
+  task          Task                @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  // Autor može biti Admin ili ClientUser
+  authorId      String
+  authorType    String              // "ADMIN" ili "CLIENT"
+  authorName    String              // Cached ime za prikaz
+  
+  content       String?             // Tekst komentara
+  attachments   CommentAttachment[]
+  
+  // Reply sistem
+  parentId      String?
+  parent        Comment?            @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       Comment[]           @relation("CommentReplies")
+  
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@map("comments")
+}
+
+// Fajlovi priloženi uz komentare
+model CommentAttachment {
+  id        String   @id @default(uuid())
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  
+  fileName  String   // Originalno ime fajla
+  filePath  String   // Putanja na serveru
+  fileType  String   // MIME type
+  fileSize  Int      // Veličina u bajtovima
+  
+  createdAt DateTime @default(now())
+
+  @@map("comment_attachments")
+}
+
+// Fajlovi klijenta (zasebni od komentara)
+model ClientFile {
+  id           String   @id @default(uuid())
+  clientId     String
+  client       Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  uploaderId   String
+  uploaderType String   // "ADMIN" ili "CLIENT"
+  
+  fileName     String   // Originalno ime
+  filePath     String   // Putanja na serveru
+  mimeType     String
+  fileSize     Int      // Bytes
+  
+  createdAt    DateTime @default(now())
+
+  @@map("client_files")
+}
+
+// ============================================
+// TIME TRACKING - Praćenje vremena
+// ============================================
+
+model TimeEntry {
+  id          String    @id @default(uuid())
+  
+  // Veza sa klijentom i opcionalno taskom
+  clientId    String
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  taskId      String?
+  task        Task?     @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  
+  // Ko je uneo vreme
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  
+  // Podaci o utrošenom vremenu
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int?      // Trajanje u minutima (izračunava se automatski)
+  
+  // Za fakturisanje
+  billable    Boolean   @default(true)
+  hourlyRate  Decimal?  @db.Decimal(10, 2) // Satnica (opciono)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("time_entries")
 }

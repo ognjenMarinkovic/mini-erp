@@ -108,7 +108,7 @@ export function PaymentDialog({ isOpen, onClose, invoice }: PaymentDialogProps) 
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Datum uplate *
+              {t('payments.paymentDate')} *
             </label>
             <input
               type="date"

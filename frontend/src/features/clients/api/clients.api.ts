@@ -23,6 +23,11 @@ export interface CreateClientData {
   city: string;
   phone?: string;
   email?: string;
+  // Opciono kreiranje prvog ClientUser account-a
+  createUserAccount?: boolean;
+  userEmail?: string;
+  userFirstName?: string;
+  userLastName?: string;
 }
 
 export interface ClientsResponse {

@@ -31,50 +31,50 @@ export function LoginPage() {
   };
 
   return (
-    <div className="rounded-lg bg-white p-8 shadow-lg">
-      <h2 className="mb-6 text-2xl font-semibold">{t('auth.login')}</h2>
+    <div className="rounded-lg bg-white dark:bg-gray-800 p-8 shadow-lg">
+      <h2 className="mb-6 text-2xl font-semibold dark:text-white">{t('auth.login')}</h2>
 
       {error && (
-        <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</div>
+        <div className="mb-4 rounded-md bg-red-50 dark:bg-red-900/30 p-3 text-sm text-red-700 dark:text-red-300">{error}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
             {t('auth.email')}
           </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
             placeholder="email@example.com"
             required
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
             {t('auth.password')}
           </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
             required
           />
         </div>
         <button
           type="submit"
           disabled={loginMutation.isPending}
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-blue-300"
+          className="w-full rounded-md bg-blue-600 dark:bg-blue-700 px-4 py-2 text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-blue-300 dark:disabled:bg-gray-600"
         >
           {loginMutation.isPending ? 'Prijava...' : t('auth.login')}
         </button>
       </form>
-      <p className="mt-4 text-center text-sm text-gray-600">
-        Nemate nalog?{' '}
-        <a href="/register" className="text-blue-600 hover:underline">
+      <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+        {t('auth.noAccount')}{' '}
+        <a href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
           {t('auth.register')}
         </a>
       </p>
