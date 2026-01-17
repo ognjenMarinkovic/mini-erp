@@ -14,6 +14,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    // Debug logovanje - proveri šta je u tokenu
+    console.log('=== JWT STRATEGY VALIDATE ===');
+    console.log('Token payload:', JSON.stringify(payload, null, 2));
+    console.log('Role from token:', payload.role);
+    console.log('Role type:', typeof payload.role);
+    console.log('================================');
+    
     return {
       id: payload.sub,  // Controller koristi user.id
       sub: payload.sub,

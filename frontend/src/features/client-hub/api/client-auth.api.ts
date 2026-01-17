@@ -13,6 +13,10 @@ export interface ClientUser {
     companyId: string;
   };
   userType: 'CLIENT';
+  notifyTaskInProgress?: boolean;
+  notifyTaskReview?: boolean;
+  notifyTaskCompleted?: boolean;
+  notifyNewComment?: boolean;
 }
 
 export interface ClientLoginData {

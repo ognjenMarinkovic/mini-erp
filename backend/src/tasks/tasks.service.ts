@@ -77,40 +77,10 @@ export class TasksService {
       },
     });
 
-    // Pošalji email notifikaciju klijentima ako je Admin kreirao task
-    if (createdByType === 'ADMIN') {
-      this.sendTaskCreatedNotification(task);
-    }
+    // Email notifikacije se šalju samo kada task pređe u IN_PROGRESS, REVIEW ili DONE,
+    // a ne kada se kreira (BACKLOG status)
 
     return task;
-  }
-
-  // Helper metoda za slanje notifikacije o kreiranom tasku
-  private async sendTaskCreatedNotification(task: any) {
-    try {
-      // Dohvati sve ClientUser emailove za ovog klijenta
-      const clientUsers = await this.prisma.clientUser.findMany({
-        where: { clientId: task.clientId, isActive: true },
-        select: { email: true },
-      });
-
-      const emails = clientUsers.map((u) => u.email);
-      if (emails.length === 0) return;
-
-      // Dohvati ime kompanije
-      const company = await this.prisma.company.findFirst({
-        where: { id: task.client.companyId },
-        select: { name: true },
-      });
-
-      await this.emailService.sendTaskCreatedEmail(
-        emails,
-        task,
-        company?.name || 'Agencija',
-      );
-    } catch (error) {
-      this.logger.error('Failed to send task created notification:', error);
-    }
   }
 
   // Svi taskovi za klijenta (grupisani po statusu za Kanban)
@@ -253,9 +223,77 @@ export class TasksService {
     });
   }
 
-  // Premesti task u drugu kolonu (Kanban drag & drop) - samo Admin
-  async moveTask(id: string, moveTaskDto: MoveTaskDto, companyId: string) {
-    const task = await this.findOne(id, companyId);
+  // Ažuriranje taska za klijenta (bez companyId provere)
+  async updateForClient(id: string, updateTaskDto: UpdateTaskDto) {
+    const task = await this.prisma.task.findUnique({
+      where: { id },
+      include: {
+        client: {
+          select: { id: true, name: true, companyId: true },
+        },
+      },
+    });
+
+    if (!task) {
+      throw new NotFoundException('Task nije pronađen');
+    }
+
+    const updateData: any = {
+      title: updateTaskDto.title,
+      description: updateTaskDto.description,
+      serviceType: updateTaskDto.serviceType,
+      isMilestone: updateTaskDto.isMilestone,
+      progress: updateTaskDto.progress,
+    };
+
+    // Ukloni undefined vrednosti
+    Object.keys(updateData).forEach(key => {
+      if (updateData[key] === undefined) delete updateData[key];
+    });
+
+    // Datum polja
+    if (updateTaskDto.deadline !== undefined) {
+      updateData.deadline = updateTaskDto.deadline ? new Date(updateTaskDto.deadline) : null;
+    }
+    if (updateTaskDto.startDate !== undefined) {
+      updateData.startDate = updateTaskDto.startDate ? new Date(updateTaskDto.startDate) : null;
+    }
+    if (updateTaskDto.endDate !== undefined) {
+      updateData.endDate = updateTaskDto.endDate ? new Date(updateTaskDto.endDate) : null;
+    }
+
+    return this.prisma.task.update({
+      where: { id },
+      data: updateData,
+      include: {
+        client: {
+          select: { id: true, name: true },
+        },
+        _count: { select: { comments: true } },
+      },
+    });
+  }
+
+  // Premesti task u drugu kolonu (Kanban drag & drop) - Admin ili Client
+  async moveTask(id: string, moveTaskDto: MoveTaskDto, companyId?: string) {
+    // Ako je companyId prosleđen, proveri pristup
+    let task;
+    if (companyId) {
+      task = await this.findOne(id, companyId);
+    } else {
+      // Za klijente, samo proveri da li task postoji
+      task = await this.prisma.task.findUnique({
+        where: { id },
+        include: {
+          client: {
+            select: { id: true, name: true, companyId: true },
+          },
+        },
+      });
+      if (!task) {
+        throw new NotFoundException('Task nije pronađen');
+      }
+    }
 
     const { status: newStatus, position: newPosition } = moveTaskDto;
     const oldStatus = task.status;
@@ -349,8 +387,8 @@ export class TasksService {
       },
     });
 
-    // Pošalji email notifikaciju SAMO kada task uđe u REVIEW ili DONE
-    if (oldStatus !== newStatus && (newStatus === 'REVIEW' || newStatus === 'DONE')) {
+    // Pošalji email notifikaciju kada task uđe u IN_PROGRESS, REVIEW ili DONE
+    if (oldStatus !== newStatus && (newStatus === 'IN_PROGRESS' || newStatus === 'REVIEW' || newStatus === 'DONE')) {
       this.sendTaskMovedNotification(updatedTask, oldStatus, newStatus);
     }
 
@@ -364,14 +402,37 @@ export class TasksService {
     newStatus: string,
   ) {
     try {
-      // Dohvati sve ClientUser emailove za ovog klijenta
+      // Dohvati sve ClientUser emailove za ovog klijenta sa notification preferences
       const clientUsers = await this.prisma.clientUser.findMany({
         where: { clientId: task.clientId, isActive: true },
-        select: { email: true },
+        select: { 
+          email: true,
+          notifyTaskInProgress: true,
+          notifyTaskReview: true,
+          notifyTaskCompleted: true,
+        },
       });
 
-      const emails = clientUsers.map((u) => u.email);
-      if (emails.length === 0) return;
+      if (clientUsers.length === 0) return;
+
+      // Filtriraj korisnike koji žele notifikacije za ovaj status
+      let emailsToNotify: string[] = [];
+      
+      if (newStatus === 'IN_PROGRESS') {
+        emailsToNotify = clientUsers
+          .filter((u) => u.notifyTaskInProgress !== false)
+          .map((u) => u.email);
+      } else if (newStatus === 'REVIEW') {
+        emailsToNotify = clientUsers
+          .filter((u) => u.notifyTaskReview !== false)
+          .map((u) => u.email);
+      } else if (newStatus === 'DONE') {
+        emailsToNotify = clientUsers
+          .filter((u) => u.notifyTaskCompleted !== false)
+          .map((u) => u.email);
+      }
+
+      if (emailsToNotify.length === 0) return;
 
       // Dohvati ime kompanije
       const company = await this.prisma.company.findFirst({
@@ -382,12 +443,15 @@ export class TasksService {
       const companyName = company?.name || 'Agencija';
 
       // Pošalji odgovarajući email baziran na novom statusu
-      if (newStatus === 'REVIEW') {
+      if (newStatus === 'IN_PROGRESS') {
+        // Task je počeo sa radom - šalji obaveštenje
+        await this.emailService.sendTaskCreatedEmail(emailsToNotify, task, companyName);
+      } else if (newStatus === 'REVIEW') {
         // Task spreman za pregled - glavni email za klijenta
-        await this.emailService.sendTaskReadyForReviewEmail(emails, task, companyName);
+        await this.emailService.sendTaskReadyForReviewEmail(emailsToNotify, task, companyName);
       } else if (newStatus === 'DONE') {
         // Task završen
-        await this.emailService.sendTaskCompletedEmail(emails, task, companyName);
+        await this.emailService.sendTaskCompletedEmail(emailsToNotify, task, companyName);
       }
     } catch (error) {
       this.logger.error('Failed to send task moved notification:', error);
@@ -440,13 +504,24 @@ export class TasksService {
   }
 
   // Gantt Chart - svi taskovi sa dependencies
-  async getGantt(clientId: string, companyId: string) {
+  async getGantt(clientId: string, companyId?: string) {
     // Proveri pristup
-    const client = await this.prisma.client.findFirst({
-      where: { id: clientId, companyId },
-    });
-    if (!client) {
-      throw new ForbiddenException('Nemate pristup ovom klijentu');
+    let client;
+    if (companyId) {
+      client = await this.prisma.client.findFirst({
+        where: { id: clientId, companyId },
+      });
+      if (!client) {
+        throw new ForbiddenException('Nemate pristup ovom klijentu');
+      }
+    } else {
+      // Za klijente, samo proveri da li klijent postoji
+      client = await this.prisma.client.findUnique({
+        where: { id: clientId },
+      });
+      if (!client) {
+        throw new NotFoundException('Klijent nije pronađen');
+      }
     }
 
     // Dohvati sve taskove koji imaju startDate i endDate

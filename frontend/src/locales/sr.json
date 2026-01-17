@@ -15,7 +15,8 @@
     "pib": "PIB",
     "address": "Adresa",
     "city": "Grad",
-    "phone": "Telefon"
+    "phone": "Telefon",
+    "noAccount": "Nemate nalog?"
   },
   "nav": {
     "dashboard": "Kontrolna tabla",
@@ -39,7 +40,25 @@
     "export": "Eksportuj",
     "loading": "Učitavanje...",
     "noData": "Nema podataka",
-    "actions": "Akcije"
+    "actions": "Akcije",
+    "refresh": "Osveži",
+    "select": "Izaberi",
+    "today": "Danas",
+    "active": "Aktivni",
+    "inProgress": "U toku",
+    "noComments": "Nema komentara",
+    "beFirst": "Budite prvi koji će ostaviti komentar",
+    "confirmDelete": "Da li ste sigurni da želite da obrišete?",
+    "error": "Greška",
+    "success": "Uspešno",
+    "yes": "Da",
+    "no": "Ne",
+    "noDescription": "Bez opisa",
+    "optional": "opciono",
+    "saving": "Čuvanje...",
+    "comments": "Komentari",
+    "sending": "Slanje...",
+    "required": "je obavezan"
   },
   "clients": {
     "title": "Klijenti",
@@ -63,7 +82,15 @@
     "paid": "Plaćeno",
     "overdue": "Prekoračeno",
     "partial": "Delimično plaćeno",
-    "cancelled": "Otkazano"
+    "cancelled": "Otkazano",
+    "downloadPdf": "Preuzmi PDF"
+  },
+  "payments": {
+    "title": "Uplate",
+    "addPayment": "Dodaj uplatu",
+    "paymentDate": "Datum uplate",
+    "amount": "Iznos",
+    "note": "Napomena"
   },
   "expenses": {
     "title": "Troškovi",
@@ -80,7 +107,16 @@
     "outstanding": "Dugovanja",
     "clients": "Broj klijenata",
     "recentInvoices": "Nedavne fakture",
-    "overdueInvoices": "Fakture sa prekoračenim rokom"
+    "overdueInvoices": "Fakture sa prekoračenim rokom",
+    "tasksFor": "Taskovi za",
+    "activeTasks": "Aktivni taskovi",
+    "selectClientPrompt": "Izaberite klijenta",
+    "selectClientDescription": "Koristite dropdown iznad da izaberete klijenta i vidite njegove taskove",
+    "businessOverview": "Pregled poslovanja",
+    "thisMonth": "Ovaj mesec",
+    "invoicesThisMonth": "Faktura ovog meseca",
+    "noOverdueInvoices": "Nema prekoračenih faktura",
+    "noData": "Nema podataka"
   },
   "kanban": {
     "title": "Kanban Board",
@@ -96,7 +132,21 @@
     "taskDescription": "Opis",
     "serviceType": "Tip servisa",
     "deadline": "Rok",
+    "serviceTypes": {
+      "BRANDING": "Branding",
+      "LOGO_DESIGN": "Logo",
+      "WEB_DESIGN": "Web",
+      "UI_UX": "UI/UX",
+      "WEBFLOW_DEV": "Webflow",
+      "SOCIAL_MEDIA": "Social",
+      "PITCH_DECK": "Pitch",
+      "MOTION_GRAPHICS": "Motion",
+      "ILLUSTRATIONS": "Ilustracije",
+      "PRINT_DESIGN": "Print",
+      "OTHER": "Ostalo"
+    },
     "noTasks": "Nema taskova",
+    "deleteTaskConfirm": "Da li ste sigurni da želite da obrišete ovaj task?",
     "columns": {
       "onboarding": "Onboarding",
       "backlog": "Backlog",
@@ -104,6 +154,104 @@
       "review": "Review",
       "done": "Završeno",
       "archive": "Arhiva"
+    },
+    "clientColumns": {
+      "backlog": "Zahtevi",
+      "inProgress": "U toku",
+      "review": "Na pregledu",
+      "done": "Završeno"
     }
+  },
+  "clientSelector": {
+    "activeClient": "Aktivni klijent",
+    "selectClient": "Izaberi klijenta...",
+    "noClients": "Nema klijenata",
+    "clear": "Poništi izbor"
+  },
+  "gantt": {
+    "title": "Gantt Chart",
+    "month": "Mesec",
+    "week": "Nedelja",
+    "today": "Danas",
+    "noTasks": "Nema taskova za prikaz",
+    "noTasksDescription": "Taskovi se prikazuju na Gantt dijagramu kada pređu u \"U toku\" status.",
+    "noTasksDescription2": "Početak se beleži automatski.",
+    "tasksWaiting": "taskova čeka početak rada",
+    "tasksWaitingDescription": "taskova čeka da uđu u fazu rada",
+    "selectClientPrompt": "Izaberite klijenta",
+    "selectClientDescription": "Koristite dropdown u header-u iznad da izaberete klijenta",
+    "clickForDetails": "Klikni na task za detalje",
+    "autoDates": "Datumi se automatski beleže pri prelasku u \"U toku\" i \"Završeno\"",
+    "newTask": "Novi Task",
+    "months": {
+      "january": "Januar",
+      "february": "Februar",
+      "march": "Mart",
+      "april": "April",
+      "may": "Maj",
+      "june": "Jun",
+      "july": "Jul",
+      "august": "Avgust",
+      "september": "Septembar",
+      "october": "Oktobar",
+      "november": "Novembar",
+      "december": "Decembar"
+    },
+    "days": {
+      "sun": "Ned",
+      "mon": "Pon",
+      "tue": "Uto",
+      "wed": "Sre",
+      "thu": "Čet",
+      "fri": "Pet",
+      "sat": "Sub"
+    }
+  },
+  "timeTracking": {
+    "title": "Time Tracking",
+    "selectClientPrompt": "Izaberite klijenta",
+    "selectClientDescription": "Koristite dropdown u header-u iznad da izaberete klijenta",
+    "manualEntry": "Ručni unos",
+    "noEntries": "Nema unetog vremena",
+    "thisWeek": "Ove nedelje",
+    "billable": "Naplativo",
+    "entries": "Unosa",
+    "clients": "Klijenata",
+    "client": "Klijent",
+    "task": "Task",
+    "date": "Datum",
+    "duration": "Trajanje",
+    "inProgress": "U toku",
+    "total": "Ukupno",
+    "entriesCount": "unosa",
+    "editEntry": "Izmeni unos",
+    "manualEntryTitle": "Ručni unos vremena",
+    "description": "Opis",
+    "startTime": "Početak",
+    "endTime": "Kraj",
+    "hourlyRate": "Satnica (RSD)",
+    "whatAreYouDoing": "Šta si radio?",
+    "withoutTask": "Bez taska",
+    "save": "Sačuvaj",
+    "add": "Dodaj",
+    "saving": "Čuvanje...",
+    "confirmDelete": "Da li ste sigurni da želite da obrišete ovaj unos?",
+    "start": "Start",
+    "activeTimer": "Aktivan timer za",
+    "whatAreYouDoingOptional": "Šta radiš? (opciono)"
+  },
+  "clientHub": {
+    "title": "Taskovi",
+    "newRequest": "Novi zahtev",
+    "requestInfo": "Vaš zahtev će biti dodat u listu čekanja i naš tim će ga pregledati u najkraćem roku.",
+    "requestTitle": "Naslov zahteva",
+    "serviceType": "Tip usluge",
+    "desiredDeadline": "Željeni rok (opciono)",
+    "requestDescription": "Opis zahteva",
+    "createRequestError": "Greška pri kreiranju zahteva. Pokušajte ponovo.",
+    "requestTitlePlaceholder": "Npr. Izmena logotipa, Novi banner za sajt...",
+    "requestDescriptionPlaceholder": "Opišite detaljno šta vam je potrebno...",
+    "submitRequest": "Pošalji zahtev",
+    "files": "Fajlovi"
   }
 }

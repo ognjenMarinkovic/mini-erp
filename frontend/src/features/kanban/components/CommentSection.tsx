@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { sr } from 'date-fns/locale';
@@ -14,6 +15,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ taskId, currentUserId, currentUserType }: CommentSectionProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [newComment, setNewComment] = useState('');
 
@@ -49,7 +51,7 @@ export function CommentSection({ taskId, currentUserId, currentUserType }: Comme
   };
 
   const handleDelete = (commentId: string) => {
-    if (window.confirm('Da li ste sigurni da želite da obrišete ovaj komentar?')) {
+    if (window.confirm(t('common.confirmDelete'))) {
       deleteMutation.mutate(commentId);
     }
   };
@@ -68,7 +70,7 @@ export function CommentSection({ taskId, currentUserId, currentUserType }: Comme
       <div className="flex-1 space-y-4 overflow-y-auto">
         {comments?.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-8">
-            Nema komentara. Budite prvi koji će ostaviti komentar.
+            {t('common.noComments')}. {t('common.beFirst')}
           </p>
         ) : (
           comments?.map((comment) => (

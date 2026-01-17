@@ -45,5 +45,6 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`🚀 Server je pokrenut na: http://localhost:${port}`);
   console.log(`📚 Swagger dokumentacija: http://localhost:${port}/api/docs`);
+  console.log('=== BACKEND SERVER STARTED - LOGS WILL APPEAR HERE ===');
 }
 bootstrap();

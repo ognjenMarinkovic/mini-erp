@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { sr } from 'date-fns/locale';
 import { Calendar, MessageSquare } from 'lucide-react';
@@ -10,15 +11,16 @@ interface ClientKanbanBoardProps {
   onTaskClick: (task: Task) => void;
 }
 
-// Klijent vidi samo 4 kolone (bez ONBOARDING i ARCHIVE)
-const visibleColumns: { id: TaskStatus; title: string; color: string }[] = [
-  { id: 'BACKLOG', title: 'Zahtevi', color: 'bg-gray-200' },
-  { id: 'IN_PROGRESS', title: 'U toku', color: 'bg-blue-200' },
-  { id: 'REVIEW', title: 'Na pregledu', color: 'bg-amber-200' },
-  { id: 'DONE', title: 'Završeno', color: 'bg-green-200' },
-];
-
 export function ClientKanbanBoard({ columns, onTaskClick }: ClientKanbanBoardProps) {
+  const { t } = useTranslation();
+
+  // Klijent vidi samo 4 kolone (bez ONBOARDING i ARCHIVE)
+  const visibleColumns: { id: TaskStatus; title: string; color: string }[] = [
+    { id: 'BACKLOG', title: t('kanban.clientColumns.backlog'), color: 'bg-gray-200' },
+    { id: 'IN_PROGRESS', title: t('kanban.clientColumns.inProgress'), color: 'bg-blue-200' },
+    { id: 'REVIEW', title: t('kanban.clientColumns.review'), color: 'bg-amber-200' },
+    { id: 'DONE', title: t('kanban.clientColumns.done'), color: 'bg-green-200' },
+  ];
   return (
     <div className="flex h-full gap-4 overflow-x-auto pb-4">
       {visibleColumns.map((col) => (
@@ -43,6 +45,8 @@ interface ClientKanbanColumnProps {
 }
 
 function ClientKanbanColumn({ title, color, tasks, onTaskClick }: ClientKanbanColumnProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="flex w-72 flex-shrink-0 flex-col rounded-lg bg-gray-50">
       {/* Header */}
@@ -63,7 +67,7 @@ function ClientKanbanColumn({ title, color, tasks, onTaskClick }: ClientKanbanCo
 
         {tasks.length === 0 && (
           <div className="flex h-20 items-center justify-center text-sm text-gray-400">
-            Nema taskova
+            {t('kanban.noTasks')}
           </div>
         )}
       </div>

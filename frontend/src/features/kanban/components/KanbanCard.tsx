@@ -47,8 +47,8 @@ export function KanbanCard({ task, onClick, isDragging }: KanbanCardProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        'group cursor-pointer rounded-lg border bg-white p-3 shadow-sm transition-all hover:shadow-md',
-        (isDragging || isSortableDragging) && 'opacity-50 shadow-lg ring-2 ring-blue-400',
+        'group cursor-pointer rounded-lg border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 p-3 shadow-sm transition-all hover:shadow-md',
+        (isDragging || isSortableDragging) && 'opacity-50 shadow-lg ring-2 ring-blue-400 dark:ring-blue-500',
       )}
       onClick={onClick}
     >
@@ -58,7 +58,7 @@ export function KanbanCard({ task, onClick, isDragging }: KanbanCardProps) {
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab touch-none text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+          className="cursor-grab touch-none text-gray-400 dark:text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
           onClick={(e) => e.stopPropagation()}
         >
           <GripVertical className="h-4 w-4" />
@@ -66,19 +66,19 @@ export function KanbanCard({ task, onClick, isDragging }: KanbanCardProps) {
       </div>
 
       {/* Naslov */}
-      <h4 className="mb-2 font-medium text-gray-900 line-clamp-2">{task.title}</h4>
+      <h4 className="mb-2 font-medium text-gray-900 dark:text-white line-clamp-2">{task.title}</h4>
 
       {/* Klijent */}
-      <p className="mb-2 text-xs text-gray-500">{task.client.name}</p>
+      <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">{task.client.name}</p>
 
       {/* Footer sa deadline i komentarima */}
-      <div className="flex items-center justify-between text-xs text-gray-500">
+      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
         {task.deadline ? (
           <div
             className={cn(
               'flex items-center gap-1',
-              isOverdue && 'text-red-600',
-              isDeadlineClose && !isOverdue && 'text-amber-600'
+              isOverdue && 'text-red-600 dark:text-red-400',
+              isDeadlineClose && !isOverdue && 'text-amber-600 dark:text-amber-500'
             )}
           >
             <Calendar className="h-3.5 w-3.5" />

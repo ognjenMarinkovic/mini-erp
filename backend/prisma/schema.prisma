@@ -27,6 +27,7 @@ model User {
 }
 
 enum UserRole {
+  SUPERADMIN
   ADMIN
   USER
   ACCOUNTANT
@@ -175,6 +176,11 @@ model ClientUser {
   avatar    String?
   isActive  Boolean        @default(true)
   lastLogin DateTime?
+  // Notification preferences
+  notifyTaskInProgress Boolean @default(true)
+  notifyTaskReview     Boolean @default(true)
+  notifyTaskCompleted  Boolean @default(true)
+  notifyNewComment     Boolean @default(true)
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 

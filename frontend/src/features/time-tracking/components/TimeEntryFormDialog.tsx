@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { X, Clock, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
@@ -20,6 +21,7 @@ export function TimeEntryFormDialog({
   onClose,
   onSuccess,
 }: TimeEntryFormDialogProps) {
+  const { t } = useTranslation();
   const isEdit = !!entry;
 
   const [formData, setFormData] = useState({
@@ -87,7 +89,7 @@ export function TimeEntryFormDialog({
           <div className="flex items-center gap-3">
             <Clock className="h-5 w-5 text-blue-600" />
             <h2 className="text-lg font-semibold text-gray-900">
-              {isEdit ? 'Izmeni unos' : 'Ručni unos vremena'}
+              {isEdit ? t('timeTracking.editEntry') : t('timeTracking.manualEntryTitle')}
             </h2>
           </div>
           <button
@@ -104,7 +106,7 @@ export function TimeEntryFormDialog({
             {/* Klijent */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                Klijent
+                {t('timeTracking.client')}
               </label>
               <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2">
                 <span className="font-medium text-blue-700">{clientName}</span>
@@ -115,14 +117,14 @@ export function TimeEntryFormDialog({
             {tasks.length > 0 && (
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Task (opciono)
+                  {t('timeTracking.task')} ({t('common.optional', { defaultValue: 'opciono' })})
                 </label>
                 <select
                   value={formData.taskId}
                   onChange={(e) => setFormData({ ...formData, taskId: e.target.value })}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
                 >
-                  <option value="">Bez taska</option>
+                  <option value="">{t('timeTracking.withoutTask')}</option>
                   {tasks.map((task) => (
                     <option key={task.id} value={task.id}>
                       {task.title}
@@ -135,13 +137,13 @@ export function TimeEntryFormDialog({
             {/* Opis */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                Opis
+                {t('timeTracking.description')}
               </label>
               <input
                 type="text"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Šta si radio?"
+                placeholder={t('timeTracking.whatAreYouDoing')}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
               />
             </div>
@@ -150,7 +152,7 @@ export function TimeEntryFormDialog({
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Datum *
+                  {t('timeTracking.date')} *
                 </label>
                 <input
                   type="date"
@@ -162,7 +164,7 @@ export function TimeEntryFormDialog({
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Početak *
+                  {t('timeTracking.startTime')} *
                 </label>
                 <input
                   type="time"
@@ -174,7 +176,7 @@ export function TimeEntryFormDialog({
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Kraj *
+                  {t('timeTracking.endTime')} *
                 </label>
                 <input
                   type="time"
@@ -197,12 +199,12 @@ export function TimeEntryFormDialog({
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <label htmlFor="billable" className="text-sm font-medium text-gray-700">
-                  Naplativo
+                  {t('timeTracking.billable')}
                 </label>
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Satnica (RSD)
+                  {t('timeTracking.hourlyRate')}
                 </label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -225,14 +227,14 @@ export function TimeEntryFormDialog({
               onClick={onClose}
               className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              Otkaži
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
               disabled={isPending}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              {isPending ? 'Čuvanje...' : isEdit ? 'Sačuvaj' : 'Dodaj'}
+              {isPending ? t('timeTracking.saving') : isEdit ? t('timeTracking.save') : t('timeTracking.add')}
             </button>
           </div>
         </form>

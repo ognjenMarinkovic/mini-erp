@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { CalendarRange, RefreshCw, Plus, AlertCircle } from 'lucide-react';
 import { ganttApi, type GanttTask } from '../api/gantt.api';
 import { useClientStore } from '@/stores/client-store';
@@ -8,6 +9,7 @@ import { TaskDetailDrawer } from '@/features/kanban/components/TaskDetailDrawer'
 import { TaskForm } from '@/features/kanban/components/TaskForm';
 
 export function GanttPage() {
+  const { t } = useTranslation();
   const { selectedClient } = useClientStore();
   const [selectedTask, setSelectedTask] = useState<GanttTask | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -33,10 +35,10 @@ export function GanttPage() {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <CalendarRange className="h-6 w-6 text-blue-600" />
-          <h1 className="text-2xl font-bold text-gray-900">Gantt Chart</h1>
+          <CalendarRange className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('gantt.title')}</h1>
           {selectedClient && (
-            <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
+            <span className="rounded-full bg-blue-100 dark:bg-blue-900/30 px-3 py-1 text-sm font-medium text-blue-700 dark:text-blue-300">
               {selectedClient.name}
             </span>
           )}
@@ -48,40 +50,40 @@ export function GanttPage() {
             <button
               onClick={() => refetch()}
               disabled={isFetching}
-              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
             >
               <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-              Osveži
+              {t('common.refresh')}
             </button>
 
             <button
               onClick={() => setShowTaskForm(true)}
-              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              className="flex items-center gap-2 rounded-lg bg-blue-600 dark:bg-blue-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:hover:bg-blue-600"
             >
               <Plus className="h-4 w-4" />
-              Novi Task
+              {t('gantt.newTask')}
             </button>
           </div>
         )}
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-hidden rounded-lg bg-white">
+      <div className="flex-1 overflow-hidden rounded-lg bg-white dark:bg-gray-800">
         {!selectedClient ? (
           <div className="flex h-full items-center justify-center">
-            <div className="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-12 text-center">
-              <AlertCircle className="mx-auto h-12 w-12 text-gray-300" />
-              <h3 className="mt-4 text-lg font-medium text-gray-900">
-                Izaberite klijenta
+            <div className="rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-12 text-center">
+              <AlertCircle className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
+              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+                {t('gantt.selectClientPrompt')}
               </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                Koristite dropdown u header-u iznad da izaberete klijenta
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                {t('gantt.selectClientDescription')}
               </p>
             </div>
           </div>
         ) : ganttLoading ? (
           <div className="flex h-full items-center justify-center">
-            <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
+            <RefreshCw className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400" />
           </div>
         ) : ganttData ? (
           <GanttChart

@@ -71,6 +71,9 @@ export function TaskForm({ clientId, task, onClose, onSuccess }: TaskFormProps) 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['kanban', clientId] });
       queryClient.invalidateQueries({ queryKey: ['gantt', clientId] });
+      // Refetch queries immediately to update UI
+      queryClient.refetchQueries({ queryKey: ['kanban', clientId] });
+      queryClient.refetchQueries({ queryKey: ['gantt', clientId] });
       onSuccess?.();
       onClose();
     },
@@ -91,6 +94,9 @@ export function TaskForm({ clientId, task, onClose, onSuccess }: TaskFormProps) 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['kanban', clientId] });
       queryClient.invalidateQueries({ queryKey: ['gantt', clientId] });
+      // Refetch queries immediately to update UI
+      queryClient.refetchQueries({ queryKey: ['kanban', clientId] });
+      queryClient.refetchQueries({ queryKey: ['gantt', clientId] });
       onSuccess?.();
       onClose();
     },
@@ -116,15 +122,15 @@ export function TaskForm({ clientId, task, onClose, onSuccess }: TaskFormProps) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-lg rounded-lg bg-white shadow-xl">
+      <div className="w-full max-w-lg rounded-lg bg-white dark:bg-gray-800 shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b px-6 py-4">
-          <h2 className="text-lg font-semibold">
-            {isEditing ? 'Izmeni task' : 'Novi task'}
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+          <h2 className="text-lg font-semibold dark:text-white">
+            {isEditing ? t('kanban.editTask') : t('kanban.newTask')}
           </h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg p-1 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <X className="h-5 w-5" />
           </button>
@@ -139,28 +145,28 @@ export function TaskForm({ clientId, task, onClose, onSuccess }: TaskFormProps) 
           <div className="space-y-4">
             {/* Title */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Naslov *
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('kanban.taskTitle')} *
               </label>
               <input
                 {...register('title')}
                 type="text"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Unesite naslov taska..."
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
+                placeholder={t('kanban.taskTitle') + '...'}
               />
               {errors.title && (
-                <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.title.message}</p>
               )}
             </div>
 
             {/* Service Type */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Tip servisa *
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('kanban.serviceType')} *
               </label>
               <select
                 {...register('serviceType')}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
               >
                 {(Object.keys(serviceTypeConfig) as ServiceType[]).map((type) => (
                   <option key={type} value={type}>
@@ -169,56 +175,56 @@ export function TaskForm({ clientId, task, onClose, onSuccess }: TaskFormProps) 
                 ))}
               </select>
               {errors.serviceType && (
-                <p className="mt-1 text-sm text-red-600">{errors.serviceType.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.serviceType.message}</p>
               )}
             </div>
 
             {/* Deadline */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Deadline
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('kanban.deadline')}
               </label>
               <input
                 {...register('deadline')}
                 type="date"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
               />
             </div>
 
             {/* Gantt datumi */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Datum početka (Gantt)
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('gantt.startDate', { defaultValue: 'Datum početka (Gantt)' })}
                 </label>
                 <input
                   {...register('startDate')}
                   type="date"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Datum završetka (Gantt)
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('gantt.endDate', { defaultValue: 'Datum završetka (Gantt)' })}
                 </label>
                 <input
                   {...register('endDate')}
                   type="date"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
                 />
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Opis
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('kanban.taskDescription')}
               </label>
               <textarea
                 {...register('description')}
                 rows={4}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Opišite task..."
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
+                placeholder={t('kanban.taskDescription') + '...'}
               />
             </div>
           </div>
@@ -228,16 +234,16 @@ export function TaskForm({ clientId, task, onClose, onSuccess }: TaskFormProps) 
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
               {t('common.cancel')}
             </button>
             <button
               type="submit"
               disabled={isPending || isSubmitting}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-blue-600 dark:bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50"
             >
-              {isPending ? 'Čuvanje...' : t('common.save')}
+              {isPending ? t('common.saving', { defaultValue: 'Čuvanje...' }) : t('common.save')}
             </button>
           </div>
         </form>

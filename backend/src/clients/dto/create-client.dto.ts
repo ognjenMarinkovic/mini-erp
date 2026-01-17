@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEmail, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail, IsOptional, ValidateIf } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateClientDto {
@@ -31,4 +31,27 @@ export class CreateClientDto {
   @IsEmail()
   @IsOptional()
   email?: string;
+
+  // Opciono kreiranje prvog ClientUser account-a
+  @ApiProperty({ description: 'Da li da se kreira prvi ClientUser account', required: false })
+  @IsOptional()
+  createUserAccount?: boolean;
+
+  @ApiProperty({ description: 'Email za prvi ClientUser account', required: false })
+  @ValidateIf((o) => o.createUserAccount === true)
+  @IsEmail({}, { message: 'Email mora biti validan' })
+  @IsOptional()
+  userEmail?: string;
+
+  @ApiProperty({ description: 'Ime za prvi ClientUser account', required: false })
+  @ValidateIf((o) => o.createUserAccount === true)
+  @IsString()
+  @IsOptional()
+  userFirstName?: string;
+
+  @ApiProperty({ description: 'Prezime za prvi ClientUser account', required: false })
+  @ValidateIf((o) => o.createUserAccount === true)
+  @IsString()
+  @IsOptional()
+  userLastName?: string;
 }

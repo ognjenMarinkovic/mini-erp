@@ -103,18 +103,18 @@ export function ClientFilesPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-0">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <FileText className="h-6 w-6 text-purple-600" />
-          <h1 className="text-2xl font-bold text-gray-900">Moji fajlovi</h1>
+          <FileText className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Moji fajlovi</h1>
         </div>
 
         <button
           onClick={() => refetch()}
           disabled={isFetching}
-          className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
         >
           <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
           <span>Osveži</span>
@@ -128,21 +128,21 @@ export function ClientFilesPage() {
         onDrop={handleDrop}
         className={`mb-8 rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
           isDragging
-            ? 'border-purple-400 bg-purple-50'
-            : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+            ? 'border-purple-400 dark:border-purple-600 bg-purple-50 dark:bg-purple-900/30'
+            : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-500'
         }`}
       >
         {uploadMutation.isPending ? (
           <div className="flex flex-col items-center gap-3">
-            <Loader2 className="h-10 w-10 animate-spin text-purple-600" />
-            <p className="text-sm text-gray-600">Učitavanje...</p>
+            <Loader2 className="h-10 w-10 animate-spin text-purple-600 dark:text-purple-400" />
+            <p className="text-sm text-gray-600 dark:text-gray-400">Učitavanje...</p>
           </div>
         ) : (
           <>
-            <Upload className="mx-auto h-10 w-10 text-gray-400" />
-            <p className="mt-3 text-sm text-gray-600">
+            <Upload className="mx-auto h-10 w-10 text-gray-400 dark:text-gray-500" />
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
               Prevucite fajlove ovde ili{' '}
-              <label className="cursor-pointer font-medium text-purple-600 hover:text-purple-700">
+              <label className="cursor-pointer font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300">
                 izaberite sa računara
                 <input
                   type="file"
@@ -152,7 +152,7 @@ export function ClientFilesPage() {
                 />
               </label>
             </p>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Maksimalna veličina: 50MB po fajlu
             </p>
           </>
@@ -162,49 +162,49 @@ export function ClientFilesPage() {
       {/* Files list */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-purple-600 dark:text-purple-400" />
         </div>
       ) : files?.length === 0 ? (
-        <div className="rounded-xl bg-gray-50 py-12 text-center">
-          <FileText className="mx-auto h-12 w-12 text-gray-300" />
-          <p className="mt-4 text-gray-500">Nemate otpremljenih fajlova</p>
+        <div className="rounded-xl bg-gray-50 dark:bg-gray-800 py-12 text-center">
+          <FileText className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
+          <p className="mt-4 text-gray-500 dark:text-gray-400">Nemate otpremljenih fajlova</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+        <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Naziv
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Veličina
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Datum
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Akcije
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {files?.map((file) => {
                 const FileIcon = getFileIcon(file.mimeType);
                 return (
-                  <tr key={file.id} className="hover:bg-gray-50">
+                  <tr key={file.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="whitespace-nowrap px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <FileIcon className="h-5 w-5 text-gray-400" />
-                        <span className="font-medium text-gray-900">
+                        <FileIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                        <span className="font-medium text-gray-900 dark:text-white">
                           {file.fileName}
                         </span>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {formatFileSize(file.fileSize)}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {format(new Date(file.createdAt), 'd. MMM yyyy', {
                         locale: sr,
                       })}
@@ -213,7 +213,7 @@ export function ClientFilesPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleDownload(file.id, file.fileName)}
-                          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-purple-600"
+                          className="rounded-lg p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-purple-600 dark:hover:text-purple-400"
                           title="Preuzmi"
                         >
                           <Download className="h-4 w-4" />
@@ -223,7 +223,7 @@ export function ClientFilesPage() {
                             <button
                               onClick={() => handleDelete(file.id, file.fileName)}
                               disabled={deleteMutation.isPending}
-                              className="rounded-lg p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
+                              className="rounded-lg p-2 text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
                               title="Obriši"
                             >
                               <Trash2 className="h-4 w-4" />

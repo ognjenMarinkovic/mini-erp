@@ -12,12 +12,18 @@ import { ExpensesListPage } from './features/expenses/pages/ExpensesListPage';
 import { KanbanPage } from './features/kanban/pages/KanbanPage';
 import { GanttPage } from './features/gantt/pages/GanttPage';
 import { TimeTrackingPage } from './features/time-tracking/pages/TimeTrackingPage';
+import { UsersManagementPage } from './features/auth/pages/UsersManagementPage';
 // Client Hub
 import { ClientLoginPage } from './features/client-hub/pages/ClientLoginPage';
 import { ClientHubLayout } from './features/client-hub/components/ClientHubLayout';
 import { ClientHubPage } from './features/client-hub/pages/ClientHubPage';
 import { ClientTasksPage } from './features/client-hub/pages/ClientTasksPage';
 import { ClientFilesPage } from './features/client-hub/pages/ClientFilesPage';
+import { ClientKanbanPage } from './features/client-hub/pages/ClientKanbanPage';
+import { ClientGanttPage } from './features/client-hub/pages/ClientGanttPage';
+import { ClientInvoicesPage } from './features/client-hub/pages/ClientInvoicesPage';
+import { SetupPasswordPage } from './features/client-hub/pages/SetupPasswordPage';
+import { ClientSettingsPage } from './features/client-hub/pages/ClientSettingsPage';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -35,6 +41,7 @@ function App() {
 
       {/* Client Login */}
       <Route path="/client/login" element={<ClientLoginPage />} />
+      <Route path="/client/setup-password" element={<SetupPasswordPage />} />
 
       {/* ==================== ADMIN ROUTES ==================== */}
       {isAuthenticated && (
@@ -46,6 +53,7 @@ function App() {
           <Route path="/time-tracking" element={<TimeTrackingPage />} />
           <Route path="/invoices" element={<InvoicesListPage />} />
           <Route path="/expenses" element={<ExpensesListPage />} />
+          <Route path="/users" element={<UsersManagementPage />} />
         </Route>
       )}
 
@@ -54,7 +62,11 @@ function App() {
         <Route path="/client" element={<ClientHubLayout />}>
           <Route index element={<ClientHubPage />} />
           <Route path="tasks" element={<ClientTasksPage />} />
+          <Route path="kanban" element={<ClientKanbanPage />} />
+          <Route path="gantt" element={<ClientGanttPage />} />
+          <Route path="invoices" element={<ClientInvoicesPage />} />
           <Route path="files" element={<ClientFilesPage />} />
+          <Route path="settings" element={<ClientSettingsPage />} />
         </Route>
       )}
 

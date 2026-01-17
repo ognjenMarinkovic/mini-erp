@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   DndContext,
   DragEndEvent,
@@ -24,17 +25,18 @@ interface KanbanBoardProps {
   columns: KanbanColumns;
 }
 
-const columnConfig: { id: TaskStatus; title: string; color: string }[] = [
-  { id: 'ONBOARDING', title: 'Onboarding', color: 'bg-purple-200' },
-  { id: 'BACKLOG', title: 'Backlog', color: 'bg-gray-200' },
-  { id: 'IN_PROGRESS', title: 'U toku', color: 'bg-blue-200' },
-  { id: 'REVIEW', title: 'Review', color: 'bg-amber-200' },
-  { id: 'DONE', title: 'Završeno', color: 'bg-green-200' },
-  { id: 'ARCHIVE', title: 'Arhiva', color: 'bg-slate-200' },
-];
-
 export function KanbanBoard({ clientId, columns: initialColumns }: KanbanBoardProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
+
+  const columnConfig: { id: TaskStatus; title: string; color: string }[] = [
+    { id: 'ONBOARDING', title: t('kanban.columns.onboarding'), color: 'bg-purple-200 dark:bg-purple-800' },
+    { id: 'BACKLOG', title: t('kanban.columns.backlog'), color: 'bg-gray-200 dark:bg-gray-700' },
+    { id: 'IN_PROGRESS', title: t('kanban.columns.inProgress'), color: 'bg-blue-200 dark:bg-blue-800' },
+    { id: 'REVIEW', title: t('kanban.columns.review'), color: 'bg-amber-200 dark:bg-amber-800' },
+    { id: 'DONE', title: t('kanban.columns.done'), color: 'bg-green-200 dark:bg-green-800' },
+    { id: 'ARCHIVE', title: t('kanban.columns.archive'), color: 'bg-slate-200 dark:bg-slate-700' },
+  ];
   const [columns, setColumns] = useState<KanbanColumns>(initialColumns);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);

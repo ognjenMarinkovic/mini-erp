@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { sr } from 'date-fns/locale';
@@ -23,18 +24,19 @@ interface TaskDetailDrawerProps {
   onEdit: (task: Task) => void;
 }
 
-const statusLabels: Record<TaskStatus, { label: string; color: string }> = {
-  ONBOARDING: { label: 'Onboarding', color: 'bg-purple-100 text-purple-800' },
-  BACKLOG: { label: 'Backlog', color: 'bg-gray-100 text-gray-800' },
-  IN_PROGRESS: { label: 'U toku', color: 'bg-blue-100 text-blue-800' },
-  REVIEW: { label: 'Review', color: 'bg-amber-100 text-amber-800' },
-  DONE: { label: 'Završeno', color: 'bg-green-100 text-green-800' },
-  ARCHIVE: { label: 'Arhiva', color: 'bg-slate-100 text-slate-800' },
-};
-
 export function TaskDetailDrawer({ task, onClose, onEdit }: TaskDetailDrawerProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
+
+  const statusLabels: Record<TaskStatus, { label: string; color: string }> = {
+    ONBOARDING: { label: t('kanban.columns.onboarding'), color: 'bg-purple-100 text-purple-800' },
+    BACKLOG: { label: t('kanban.columns.backlog'), color: 'bg-gray-100 text-gray-800' },
+    IN_PROGRESS: { label: t('kanban.columns.inProgress'), color: 'bg-blue-100 text-blue-800' },
+    REVIEW: { label: t('kanban.columns.review'), color: 'bg-amber-100 text-amber-800' },
+    DONE: { label: t('kanban.columns.done'), color: 'bg-green-100 text-green-800' },
+    ARCHIVE: { label: t('kanban.columns.archive'), color: 'bg-slate-100 text-slate-800' },
+  };
 
   const deleteMutation = useMutation({
     mutationFn: () => tasksApi.delete(task!.id),
@@ -49,7 +51,7 @@ export function TaskDetailDrawer({ task, onClose, onEdit }: TaskDetailDrawerProp
   const statusConfig = statusLabels[task.status];
 
   const handleDelete = () => {
-    if (window.confirm('Da li ste sigurni da želite da obrišete ovaj task?')) {
+    if (window.confirm(t('kanban.deleteTaskConfirm', { defaultValue: 'Da li ste sigurni da želite da obrišete ovaj task?' }))) {
       deleteMutation.mutate();
     }
   };
@@ -75,7 +77,7 @@ export function TaskDetailDrawer({ task, onClose, onEdit }: TaskDetailDrawerProp
             <button
               onClick={() => onEdit(task)}
               className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
-              title="Izmeni"
+              title={t('common.edit')}
             >
               <Edit className="h-4 w-4" />
             </button>
@@ -83,7 +85,7 @@ export function TaskDetailDrawer({ task, onClose, onEdit }: TaskDetailDrawerProp
               onClick={handleDelete}
               disabled={deleteMutation.isPending}
               className="rounded-lg p-2 text-red-500 hover:bg-red-50"
-              title="Obriši"
+              title={t('common.delete')}
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -140,7 +142,7 @@ export function TaskDetailDrawer({ task, onClose, onEdit }: TaskDetailDrawerProp
             {/* Description */}
             {task.description && (
               <div className="mb-6">
-                <h3 className="mb-2 text-sm font-medium text-gray-700">Opis</h3>
+                <h3 className="mb-2 text-sm font-medium text-gray-700">{t('kanban.taskDescription')}</h3>
                 <p className="whitespace-pre-wrap text-sm text-gray-600">
                   {task.description}
                 </p>
@@ -152,7 +154,7 @@ export function TaskDetailDrawer({ task, onClose, onEdit }: TaskDetailDrawerProp
               <div className="mb-4 flex items-center gap-2">
                 <MessageSquare className="h-5 w-5 text-gray-400" />
                 <h3 className="text-sm font-medium text-gray-700">
-                  Komentari
+                  {t('common.comments')}
                 </h3>
               </div>
 

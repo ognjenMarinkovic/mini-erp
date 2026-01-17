@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   startOfMonth,
   endOfMonth,
@@ -17,13 +18,6 @@ import {
 import { Calendar, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { type GanttTask } from '../api/gantt.api';
 
-// Srpski nazivi na latinici
-const daniUNedelji = ['Ned', 'Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub'];
-const meseci = [
-  'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun',
-  'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'
-];
-
 interface GanttChartProps {
   tasks: GanttTask[];
   onTaskClick?: (task: GanttTask) => void;
@@ -39,35 +33,62 @@ const statusColors: Record<string, { bg: string; border: string; text: string }>
   ARCHIVE: { bg: 'bg-slate-400', border: 'border-slate-500', text: 'text-white' },
 };
 
-const statusLabels: Record<string, string> = {
-  ONBOARDING: 'Onboarding',
-  BACKLOG: 'Backlog',
-  IN_PROGRESS: 'U toku',
-  REVIEW: 'Review',
-  DONE: 'Završeno',
-  ARCHIVE: 'Arhiva',
-};
-
-const serviceTypeLabels: Record<string, string> = {
-  BRANDING: 'Branding',
-  LOGO_DESIGN: 'Logo',
-  WEB_DESIGN: 'Web',
-  UI_UX: 'UI/UX',
-  WEBFLOW_DEV: 'Webflow',
-  SOCIAL_MEDIA: 'Social',
-  PITCH_DECK: 'Pitch',
-  MOTION_GRAPHICS: 'Motion',
-  ILLUSTRATIONS: 'Ilustracije',
-  PRINT_DESIGN: 'Print',
-  OTHER: 'Ostalo',
-};
-
 type ViewMode = 'month' | 'week';
 
 export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
+  const { t } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Meseci i dani na osnovu jezika
+  const meseci = useMemo(() => [
+    t('gantt.months.january'),
+    t('gantt.months.february'),
+    t('gantt.months.march'),
+    t('gantt.months.april'),
+    t('gantt.months.may'),
+    t('gantt.months.june'),
+    t('gantt.months.july'),
+    t('gantt.months.august'),
+    t('gantt.months.september'),
+    t('gantt.months.october'),
+    t('gantt.months.november'),
+    t('gantt.months.december'),
+  ], [t]);
+
+  const daniUNedelji = useMemo(() => [
+    t('gantt.days.sun'),
+    t('gantt.days.mon'),
+    t('gantt.days.tue'),
+    t('gantt.days.wed'),
+    t('gantt.days.thu'),
+    t('gantt.days.fri'),
+    t('gantt.days.sat'),
+  ], [t]);
+
+  const statusLabels: Record<string, string> = {
+    ONBOARDING: t('kanban.columns.onboarding'),
+    BACKLOG: t('kanban.columns.backlog'),
+    IN_PROGRESS: t('kanban.columns.inProgress'),
+    REVIEW: t('kanban.columns.review'),
+    DONE: t('kanban.columns.done'),
+    ARCHIVE: t('kanban.columns.archive'),
+  };
+
+  const serviceTypeLabels: Record<string, string> = {
+    BRANDING: t('kanban.serviceTypes.BRANDING'),
+    LOGO_DESIGN: t('kanban.serviceTypes.LOGO_DESIGN'),
+    WEB_DESIGN: t('kanban.serviceTypes.WEB_DESIGN'),
+    UI_UX: t('kanban.serviceTypes.UI_UX'),
+    WEBFLOW_DEV: t('kanban.serviceTypes.WEBFLOW_DEV'),
+    SOCIAL_MEDIA: t('kanban.serviceTypes.SOCIAL_MEDIA'),
+    PITCH_DECK: t('kanban.serviceTypes.PITCH_DECK'),
+    MOTION_GRAPHICS: t('kanban.serviceTypes.MOTION_GRAPHICS'),
+    ILLUSTRATIONS: t('kanban.serviceTypes.ILLUSTRATIONS'),
+    PRINT_DESIGN: t('kanban.serviceTypes.PRINT_DESIGN'),
+    OTHER: t('kanban.serviceTypes.OTHER'),
+  };
 
   // Filtriraj taskove koji imaju startDate (endDate može biti null za aktivne taskove)
   const tasksWithDates = useMemo(() => {
@@ -185,18 +206,18 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
 
   if (tasksWithDates.length === 0) {
     return (
-      <div className="flex h-96 flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
-        <Calendar className="mb-4 h-16 w-16 text-gray-300" />
-        <h3 className="mb-2 text-lg font-semibold text-gray-700">Nema taskova za prikaz</h3>
-        <p className="max-w-md text-center text-sm text-gray-500">
-          Taskovi se prikazuju na Gantt dijagramu kada pređu u "U toku" status.
+      <div className="flex h-96 flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+        <Calendar className="mb-4 h-16 w-16 text-gray-300 dark:text-gray-600" />
+        <h3 className="mb-2 text-lg font-semibold text-gray-700 dark:text-white">{t('gantt.noTasks')}</h3>
+        <p className="max-w-md text-center text-sm text-gray-500 dark:text-gray-400">
+          {t('gantt.noTasksDescription')}
           <br />
-          Početak se beleži automatski.
+          {t('gantt.noTasksDescription2')}
         </p>
         {tasksWithoutDates.length > 0 && (
-          <div className="mt-4 flex items-center gap-2 rounded-lg bg-amber-50 px-4 py-2 text-amber-700">
+          <div className="mt-4 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-900/30 px-4 py-2 text-amber-700 dark:text-amber-300">
             <Info className="h-4 w-4" />
-            <span className="text-sm">{tasksWithoutDates.length} taskova čeka početak rada</span>
+            <span className="text-sm">{tasksWithoutDates.length} {t('gantt.tasksWaiting')}</span>
           </div>
         )}
       </div>
@@ -206,56 +227,56 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Header sa navigacijom */}
-      <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm">
+      <div className="flex items-center justify-between rounded-xl bg-white dark:bg-gray-800 p-4 shadow-sm">
         <div className="flex items-center gap-3">
           <button
             onClick={navigatePrev}
-            className="rounded-lg p-2 text-gray-600 hover:bg-gray-100"
+            className="rounded-lg p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           
-          <h2 className="min-w-[200px] text-center text-xl font-bold text-gray-900">
+          <h2 className="min-w-[200px] text-center text-xl font-bold text-gray-900 dark:text-white">
             {meseci[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
           
           <button
             onClick={navigateNext}
-            className="rounded-lg p-2 text-gray-600 hover:bg-gray-100"
+            className="rounded-lg p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
 
           <button
             onClick={goToToday}
-            className="ml-2 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-100"
+            className="ml-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50"
           >
-            Danas
+            {t('gantt.today')}
           </button>
         </div>
 
         <div className="flex items-center gap-6">
           {/* View mode */}
-          <div className="flex items-center gap-1 rounded-lg bg-gray-100 p-1">
+          <div className="flex items-center gap-1 rounded-lg bg-gray-100 dark:bg-gray-700 p-1">
             <button
               onClick={() => setViewMode('month')}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 viewMode === 'month'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              Mesec
+              {t('gantt.month')}
             </button>
             <button
               onClick={() => setViewMode('week')}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 viewMode === 'week'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              Nedelja
+              {t('gantt.week')}
             </button>
           </div>
 
@@ -264,7 +285,7 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
             {['IN_PROGRESS', 'REVIEW', 'DONE'].map((status) => (
               <div key={status} className="flex items-center gap-1.5">
                 <div className={`h-3 w-3 rounded ${statusColors[status].bg}`} />
-                <span className="text-xs text-gray-600">{statusLabels[status]}</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">{statusLabels[status]}</span>
               </div>
             ))}
           </div>
@@ -273,23 +294,23 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
 
       {/* Upozorenje */}
       {tasksWithoutDates.length > 0 && (
-        <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-          <Info className="h-4 w-4 text-amber-600" />
-          <p className="text-sm text-amber-700">
-            <strong>{tasksWithoutDates.length}</strong> taskova čeka da uđu u fazu rada
+        <div className="flex items-center gap-2 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/30 px-4 py-3">
+          <Info className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            <strong>{tasksWithoutDates.length}</strong> {t('gantt.tasksWaitingDescription')}
           </p>
         </div>
       )}
 
       {/* Gantt tabela */}
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
         <div className="flex">
           {/* Leva kolona sa nazivima taskova */}
-          <div className="w-64 flex-shrink-0 border-r border-gray-200 bg-gray-50">
+          <div className="w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
             {/* Header */}
-            <div className="h-20 border-b border-gray-200 bg-gray-100 px-4 py-2">
-              <div className="text-xs font-medium uppercase tracking-wider text-gray-500">
-                Task
+            <div className="h-20 border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 px-4 py-2">
+              <div className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                {t('kanban.taskTitle')}
               </div>
             </div>
             
@@ -298,13 +319,13 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
               <div
                 key={task.id}
                 onClick={() => onTaskClick?.(task)}
-                className="flex h-14 cursor-pointer items-center border-b border-gray-100 px-4 hover:bg-gray-100"
+                className="flex h-14 cursor-pointer items-center border-b border-gray-100 dark:border-gray-700 px-4 hover:bg-gray-100 dark:hover:bg-gray-700/50"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-gray-900">
+                  <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
                     {task.title}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {serviceTypeLabels[task.serviceType] || task.serviceType}
                   </p>
                 </div>
@@ -316,9 +337,9 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
           <div className="flex-1 overflow-x-auto" ref={scrollRef}>
             <div style={{ minWidth: totalWidth }}>
               {/* Datumi header */}
-              <div className="h-20 border-b border-gray-200">
+              <div className="h-20 border-b border-gray-200 dark:border-gray-700">
                 {/* Meseci/Nedelje header */}
-                <div className="flex h-8 border-b border-gray-100">
+                <div className="flex h-8 border-b border-gray-100 dark:border-gray-700">
                   {viewMode === 'month' ? (
                     // Za mesec prikaz - prikaži mesece kao header
                     months.map((month) => {
@@ -331,8 +352,8 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
                         <div
                           key={month.date.toISOString()}
                           style={{ width: monthDays.length * cellWidth }}
-                          className={`flex items-center justify-center border-r border-gray-200 text-sm font-bold ${
-                            isCurrent ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+                          className={`flex items-center justify-center border-r border-gray-200 dark:border-gray-700 text-sm font-bold ${
+                            isCurrent ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                           }`}
                         >
                           {meseci[month.date.getMonth()]} {month.date.getFullYear()}
@@ -348,8 +369,8 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
                         <div
                           key={week.toISOString()}
                           style={{ width: 7 * cellWidth }}
-                          className={`flex items-center justify-center border-r border-gray-200 text-xs font-semibold ${
-                            isCurrentWeek ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+                          className={`flex items-center justify-center border-r border-gray-200 dark:border-gray-700 text-xs font-semibold ${
+                            isCurrentWeek ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                           }`}
                         >
                           {week.getDate()}. {meseci[week.getMonth()].substring(0, 3)} - {weekEnd.getDate()}. {meseci[weekEnd.getMonth()].substring(0, 3)}
@@ -369,14 +390,14 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
                       <div
                         key={day.toISOString()}
                         style={{ width: cellWidth }}
-                        className={`flex flex-col items-center justify-center border-r border-gray-100 ${
-                          isToday ? 'bg-blue-100' : isWeekend ? 'bg-gray-100' : 'bg-white'
+                        className={`flex flex-col items-center justify-center border-r border-gray-100 dark:border-gray-700 ${
+                          isToday ? 'bg-blue-100 dark:bg-blue-900/30' : isWeekend ? 'bg-gray-100 dark:bg-gray-700/50' : 'bg-white dark:bg-gray-800'
                         }`}
                       >
-                        <span className={`text-[10px] font-medium ${isToday ? 'text-blue-600' : isWeekend ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <span className={`text-[10px] font-medium ${isToday ? 'text-blue-600 dark:text-blue-300' : isWeekend ? 'text-gray-400 dark:text-gray-500' : 'text-gray-500 dark:text-gray-400'}`}>
                           {daniUNedelji[dayOfWeek]}
                         </span>
-                        <span className={`text-sm font-bold ${isToday ? 'text-blue-600' : isWeekend ? 'text-gray-400' : 'text-gray-800'}`}>
+                        <span className={`text-sm font-bold ${isToday ? 'text-blue-600 dark:text-blue-300' : isWeekend ? 'text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-200'}`}>
                           {day.getDate()}
                         </span>
                       </div>
@@ -393,7 +414,7 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
                 return (
                   <div
                     key={task.id}
-                    className="relative h-14 border-b border-gray-100"
+                    className="relative h-14 border-b border-gray-100 dark:border-gray-700"
                   >
                     {/* Grid linije za dane */}
                     <div className="absolute inset-0 flex">
@@ -404,8 +425,8 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
                           <div
                             key={day.toISOString()}
                             style={{ width: cellWidth }}
-                            className={`border-r border-gray-50 ${
-                              isToday ? 'bg-blue-50/50' : isWeekend ? 'bg-gray-50/50' : ''
+                            className={`border-r border-gray-50 dark:border-gray-700 ${
+                              isToday ? 'bg-blue-50/50 dark:bg-blue-900/20' : isWeekend ? 'bg-gray-50/50 dark:bg-gray-700/30' : ''
                             }`}
                           />
                         );
@@ -439,8 +460,8 @@ export function GanttChart({ tasks, onTaskClick }: GanttChartProps) {
       </div>
 
       {/* Info */}
-      <div className="text-center text-xs text-gray-400">
-        Klikni na task za detalje • Datumi se automatski beleže pri prelasku u "U toku" i "Završeno"
+      <div className="text-center text-xs text-gray-400 dark:text-gray-500">
+        {t('gantt.clickForDetails')} • {t('gantt.autoDates')}
       </div>
     </div>
   );

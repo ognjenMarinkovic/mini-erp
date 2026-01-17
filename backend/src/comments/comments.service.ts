@@ -93,14 +93,21 @@ export class CommentsService {
   // Helper metoda za slanje notifikacije o novom komentaru
   private async sendNewCommentNotification(comment: any) {
     try {
-      // Dohvati sve ClientUser emailove za ovog klijenta
+      // Dohvati sve ClientUser emailove za ovog klijenta sa notification preferences
       const clientUsers = await this.prisma.clientUser.findMany({
         where: { clientId: comment.task.clientId, isActive: true },
-        select: { email: true },
+        select: { 
+          email: true,
+          notifyNewComment: true,
+        },
       });
 
-      const emails = clientUsers.map((u) => u.email);
-      if (emails.length === 0) return;
+      // Filtriraj korisnike koji žele notifikacije za nove komentare
+      const emailsToNotify = clientUsers
+        .filter((u) => u.notifyNewComment !== false)
+        .map((u) => u.email);
+
+      if (emailsToNotify.length === 0) return;
 
       // Dohvati ime kompanije
       const company = await this.prisma.company.findFirst({
@@ -109,7 +116,7 @@ export class CommentsService {
       });
 
       await this.emailService.sendNewCommentEmail(
-        emails,
+        emailsToNotify,
         comment.task,
         comment,
         company?.name || 'Agencija',

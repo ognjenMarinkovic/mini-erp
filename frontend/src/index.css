@@ -78,19 +78,19 @@
 
 /* TipTap / Prose stilovi */
 .prose {
-  @apply text-gray-700;
+  @apply text-gray-700 dark:text-gray-300;
 }
 .prose p {
   @apply my-2;
 }
 .prose strong {
-  @apply font-semibold text-gray-900;
+  @apply font-semibold text-gray-900 dark:text-white;
 }
 .prose em {
   @apply italic;
 }
 .prose code {
-  @apply rounded bg-gray-100 px-1 py-0.5 font-mono text-sm text-pink-600;
+  @apply rounded bg-gray-100 dark:bg-gray-800 px-1 py-0.5 font-mono text-sm text-pink-600 dark:text-pink-400;
 }
 .prose ul {
   @apply my-2 list-disc pl-5;
@@ -102,7 +102,7 @@
   @apply my-1;
 }
 .prose blockquote {
-  @apply my-2 border-l-4 border-gray-300 pl-4 italic text-gray-600;
+  @apply my-2 border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400;
 }
 .prose h1 {
   @apply my-3 text-xl font-bold;
